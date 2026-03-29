@@ -1374,9 +1374,9 @@ function scramble(el, final, dur, cb) {
   scramble(logo, "LEMON KING'S LIBRARY", 1200, () => {
     fill.style.width = '100%';
     setTimeout(() => {
-      gsap.to('#mouth-top',    { y: '-106%', duration: 1.1, ease: 'power4.inOut',
+      gsap.to('#mouth-top',    { yPercent: -106, duration: 1.1, ease: 'power4.inOut',
         onComplete: () => { document.getElementById('mouth-top').style.display = 'none'; }});
-      gsap.to('#mouth-bottom', { y: '106%',  duration: 1.1, ease: 'power4.inOut',
+      gsap.to('#mouth-bottom', { yPercent: 106,  duration: 1.1, ease: 'power4.inOut',
         onComplete: () => { document.getElementById('mouth-bottom').style.display = 'none'; }});
     }, 1600);
   });
