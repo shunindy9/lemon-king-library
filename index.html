@@ -7,11 +7,35 @@
 <meta name="description" content="Shunsuke — Tokyo analog producer. Cassette tapes, open reel recorders, vinyl, hardware synths. Original textured sound for artists, filmmakers and creators.">
 <meta property="og:title" content="LEMON KING'S LIBRARY">
 <meta property="og:description" content="Tokyo analog sound portal. Psychedelic trip-hop from cassette, reel, and vinyl.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23040109'/><text y='72' x='50' text-anchor='middle' font-size='62' fill='%23f5a623'>𝕃</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.1/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.14.1/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://unpkg.com/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script>
+// Fallback: if GSAP failed to load, provide a minimal shim so the page still works
+if (typeof gsap === 'undefined') {
+  window.gsap = {
+    registerPlugin: function(){},
+    ticker: { add: function(fn){ (function loop(t){ fn(t/1000); requestAnimationFrame(loop); })(0); }, lagSmoothing: function(){} },
+    to: function(target, vars) {
+      var dur = (vars.duration || 0.5) * 1000;
+      var start = performance.now();
+      var keys = Object.keys(vars).filter(function(k){ return !['duration','ease','onComplete','onUpdate','repeat','yoyo','delay'].includes(k); });
+      var from = {};
+      if (typeof target === 'string') target = document.querySelector(target);
+      var el = target;
+      keys.forEach(function(k){ from[k] = el ? parseFloat(getComputedStyle(el)[k]) || 0 : 0; });
+      setTimeout(function(){
+        if (vars.onComplete) vars.onComplete();
+      }, dur + (vars.delay||0)*1000);
+    },
+    from: function(target, vars) { if (vars.onComplete) setTimeout(vars.onComplete, (vars.duration||0.5)*1000); }
+  };
+  window.ScrollTrigger = { update: function(){} };
+}
+</script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.3.17/dist/lenis.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1151,47 +1175,41 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 function triggerRewind() {
   scrollLocked = true;
   lenis.stop();
-
-  // Flash effect
-  const flash = document.getElementById('flash');
-  gsap.to(flash, { opacity: 0.6, duration: 0.08, yoyo: true, repeat: 5,
-    onComplete: () => {
-      // Rapid tape tighten
-      gsap.to({ s: tapeSlack }, {
-        s: 0,
-        duration: 0.6,
-        ease: 'power4.in',
-        onUpdate: function() { tapeSlack = this.targets()[0].s; },
-        onComplete: showSpecialOffer
-      });
-    }
-  });
+  // Tighten tape via plain rAF tween (no GSAP needed)
+  const start = performance.now();
+  const startSlack = tapeSlack;
+  const dur = 600;
+  (function rewindTick(now) {
+    const p = Math.min((now - start) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 4); // power4.in approximation
+    tapeSlack = startSlack * (1 - ease);
+    if (p < 1) requestAnimationFrame(rewindTick);
+    else { tapeSlack = 0; showSpecialOffer(); }
+  })(start);
 }
 
 function showSpecialOffer() {
   const so = document.getElementById('special-offer');
   so.style.display = 'flex';
-  gsap.to(so, {
-    clipPath: 'inset(0 0% 0 0)',
-    duration: 0.9,
-    ease: 'power3.inOut',
-    onComplete: initSoCanvas
+  so.style.transition = 'none';
+  so.style.clipPath = 'inset(0 100% 0 0)';
+  requestAnimationFrame(() => {
+    so.style.transition = 'clip-path 0.9s cubic-bezier(0.25,0,0,1)';
+    so.style.clipPath = 'inset(0 0% 0 0)';
+    setTimeout(initSoCanvas, 900);
   });
 }
 
 function closeSpecialOffer() {
   const so = document.getElementById('special-offer');
-  gsap.to(so, {
-    clipPath: 'inset(0 100% 0 0)',
-    duration: 0.7,
-    ease: 'power3.inOut',
-    onComplete: () => {
+  so.style.transition = 'clip-path 0.7s cubic-bezier(0.25,0,0,1)';
+  so.style.clipPath = 'inset(0 100% 0 0)';
+  setTimeout(() => {
       so.style.display = 'none';
       rewindDone = false;
       scrollLocked = false;
       lenis.start();
-    }
-  });
+    }, 700);
 }
 
 // ── SPECIAL OFFER CANVAS ──────────────────────────────
@@ -1329,11 +1347,15 @@ function handleSend(e) {
   e.preventDefault();
   const w = document.getElementById('contact-form-wrap');
   const s = document.getElementById('contact-sent');
-  gsap.to(w, { opacity: 0, duration: 0.4, onComplete: () => {
+  w.style.transition = 'opacity 0.4s';
+  w.style.opacity = '0';
+  setTimeout(() => {
     w.style.display = 'none';
     s.style.display = 'block';
-    gsap.from(s, { opacity: 0, duration: 0.6 });
-  }});
+    s.style.opacity = '0';
+    s.style.transition = 'opacity 0.6s';
+    requestAnimationFrame(() => { s.style.opacity = '1'; });
+  }, 400);
 }
 
 // ══════════════════════════════════════════════════════
