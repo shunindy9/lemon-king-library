@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEMON KING'S JOURNAL — Tokyo Analog</title>
+<meta name="description" content="Shunsuke's journal — gear guides, Tokyo diary, the analog underground. 機材ガイド・東京日記。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23040109'/><text y='72' x='50' text-anchor='middle' font-size='62' fill='%23f5a623'>𝕃</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#040109;--cream:#f0ebe0;--amber:#f5a623;--rose:#ff6b8a;
+  --teal:#2bbfa4;--lemon:#d4e84a;
+  --glow-a:0 0 6px #f5a623,0 0 18px rgba(245,166,35,0.45);
+  --glow-t:0 0 6px #2bbfa4,0 0 18px rgba(43,191,164,0.45);
+}
+html{overflow-x:hidden;scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  background-image:
+    radial-gradient(ellipse 110% 80% at 20% 30%, rgba(6,18,88,0.55) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 70%, rgba(4,18,60,0.4) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 90% at 50% 50%, rgba(8,4,20,0.7) 0%, transparent 100%);
+  color:var(--cream);
+  font-family:'Space Mono',monospace;
+  overflow-x:hidden;
+  cursor:default;
+  min-height:100vh;
+}
+
+/* ── FIXED OVERLAYS ── */
+#scanlines{position:fixed;inset:0;z-index:2;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 3px)}
+#vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse 85% 85% at 50% 50%,transparent 40%,rgba(4,1,9,0.82) 100%)}
+#grain{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0.45;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E");background-size:200px 200px;mix-blend-mode:screen;animation:grainShift 0.3s steps(1) infinite}
+@keyframes grainShift{0%{background-position:0 0}25%{background-position:-40px -25px}50%{background-position:25px -50px}75%{background-position:-15px 40px}100%{background-position:50px 15px}}
+
+/* ── PASSWORD GATE ── */
+#gate{
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(4,1,9,0.97);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  transition:opacity 0.55s ease;
+}
+#gate.gone{opacity:0;pointer-events:none}
+.gate-logo{
+  font-family:'UnifrakturMaguntia',cursive;
+  font-size:clamp(2rem,8vw,4.5rem);
+  color:transparent;
+  -webkit-text-stroke:1px var(--amber);
+  text-shadow:var(--glow-a);
+  margin-bottom:0.5rem;
+  animation:neonF 5s ease-in-out infinite;
+}
+.gate-jp{font-family:'Noto Sans JP',sans-serif;font-size:0.85rem;color:rgba(245,166,35,0.45);letter-spacing:0.35em;margin-bottom:2.5rem}
+.gate-label{font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.5em;color:rgba(245,166,35,0.5);text-transform:uppercase;margin-bottom:0.9rem}
+/* neon typing input */
+.gate-input{
+  background:rgba(6,3,1,0.85);
+  border:1px solid rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.88);
+  text-shadow:0 0 7px rgba(255,255,255,0.45);
+  font-family:'Space Mono',monospace;
+  font-size:0.85rem;
+  letter-spacing:0.38em;
+  padding:0.85rem 1.5rem;
+  width:280px;
+  outline:none;
+  text-align:center;
+  caret-color:var(--amber);
+  transition:border-color 0.35s, box-shadow 0.35s;
+}
+.gate-input:focus{
+  border-color:rgba(255,255,255,0.22);
+  box-shadow:0 0 0 1px rgba(255,255,255,0.06), 0 0 18px rgba(255,255,255,0.05);
+}
+/* white neon burst on each keystroke */
+@keyframes keyFlash{
+  0%{
+    border-color:rgba(255,255,255,0.95);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.55),
+      0 0 10px rgba(255,255,255,0.85),
+      0 0 28px rgba(255,255,255,0.42),
+      0 0 60px rgba(210,225,255,0.22);
+    text-shadow:0 0 8px white, 0 0 22px rgba(255,255,255,0.7);
+    background:rgba(255,255,255,0.05);
+  }
+  100%{
+    border-color:rgba(255,255,255,0.12);
+    box-shadow:none;
+    text-shadow:0 0 7px rgba(255,255,255,0.45);
+    background:rgba(6,3,1,0.85);
+  }
+}
+.gate-input.key-flash{animation:keyFlash 0.52s ease-out forwards}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.gate-btn{
+  margin-top:1rem;
+  padding:0.7rem 2.2rem;
+  background:transparent;
+  border:1px solid rgba(245,166,35,0.45);
+  color:var(--amber);
+  font-family:'Cinzel',serif;
+  font-size:0.42rem;
+  letter-spacing:0.35em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all 0.25s;
+}
+.gate-btn:hover{background:rgba(245,166,35,0.08);box-shadow:var(--glow-a)}
+.gate-hint{margin-top:1.5rem;font-family:'Cinzel',serif;font-size:0.34rem;letter-spacing:0.2em;color:rgba(245,166,35,0.25)}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:1.4rem 2rem;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(4,1,9,0.85) 0%,transparent 100%)}
+.nav-back{font-family:'Cinzel',serif;font-size:0.42rem;letter-spacing:0.25em;color:rgba(245,166,35,0.6);text-decoration:none;transition:color 0.2s}
+.nav-back:hover{color:var(--amber)}
+.nav-logo{font-family:'UnifrakturMaguntia',cursive;font-size:clamp(0.9rem,2vw,1.3rem);color:var(--amber);text-decoration:none;text-shadow:var(--glow-a);animation:neonF 5s ease-in-out infinite}
+.nav-right{display:flex;align-items:center;gap:0.8rem}
+.nav-tag{font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.25em;color:rgba(245,166,35,0.35);text-transform:uppercase}
+#admin-btn{
+  background:none;border:1px solid rgba(245,166,35,0.18);
+  color:rgba(245,166,35,0.3);
+  font-family:'Cinzel',serif;font-size:0.32rem;letter-spacing:0.18em;
+  padding:0.28rem 0.6rem;cursor:pointer;
+  transition:all 0.2s;
+}
+#admin-btn:hover{border-color:rgba(245,166,35,0.5);color:rgba(245,166,35,0.75)}
+#admin-btn.active{border-color:rgba(245,166,35,0.6);color:var(--amber);background:rgba(245,166,35,0.06);text-shadow:var(--glow-a)}
+@keyframes neonF{0%,80%,100%{opacity:0.9}81%{opacity:0.2}82%{opacity:0.85}85%{opacity:0.4}86%{opacity:0.9}90%{opacity:0.15}91%{opacity:0.9}}
+
+/* ── PAGE HEADER ── */
+.journal-header{
+  position:relative;z-index:10;
+  text-align:center;
+  padding:9rem 2rem 5rem;
+  border-bottom:1px solid rgba(245,166,35,0.08);
+}
+.jh-eyebrow{font-family:'Cinzel',serif;font-size:0.4rem;letter-spacing:0.6em;color:rgba(245,166,35,0.45);text-transform:uppercase;margin-bottom:1.2rem}
+.jh-title{
+  font-family:'UnifrakturMaguntia',cursive;
+  font-size:clamp(2.8rem,9vw,7rem);
+  color:transparent;
+  -webkit-text-stroke:1.2px rgba(245,166,35,0.82);
+  text-shadow:0 0 12px rgba(245,166,35,0.7),0 0 35px rgba(245,166,35,0.35),0 0 80px rgba(220,90,0,0.2);
+  line-height:1;
+  animation:neonF 7s ease-in-out infinite;
+}
+.jh-jp{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:clamp(0.7rem,2vw,1.1rem);
+  color:transparent;
+  -webkit-text-stroke:0.5px rgba(245,166,35,0.4);
+  letter-spacing:0.4em;
+  margin-top:0.6rem;
+}
+.jh-sub{
+  font-family:'Cinzel',serif;
+  font-size:0.38rem;
+  letter-spacing:0.3em;
+  color:rgba(240,235,224,0.3);
+  text-transform:uppercase;
+  margin-top:1.4rem;
+  font-style:italic;
+}
+
+/* ── MAIN LAYOUT ── */
+main{position:relative;z-index:10;max-width:860px;margin:0 auto;padding:4rem 2rem 8rem}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity 0.75s ease,transform 0.75s ease}
+.reveal.vis{opacity:1;transform:none}
+
+/* ── POST CARD ── */
+.post{
+  background:rgba(10,6,3,0.88);
+  border:1px solid rgba(212,135,10,0.16);
+  padding:2.8rem 2.5rem 2.5rem;
+  margin-bottom:3rem;
+  position:relative;
+}
+.post::before{content:'◆';position:absolute;top:0.8rem;left:0.9rem;color:rgba(245,166,35,0.3);font-size:0.7rem;text-shadow:var(--glow-a)}
+.post::after{content:'◆';position:absolute;bottom:0.8rem;right:0.9rem;color:rgba(245,166,35,0.3);font-size:0.7rem;text-shadow:var(--glow-a)}
+.post-tbar{position:absolute;top:-1px;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--amber),transparent);box-shadow:0 0 10px var(--amber),0 0 28px rgba(245,166,35,0.3)}
+
+.post-meta{display:flex;align-items:center;flex-wrap:wrap;gap:0.8rem;margin-bottom:1.4rem}
+.post-date{font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.3em;color:var(--amber);opacity:0.7}
+.post-num{font-family:'Cinzel Decorative',serif;font-size:0.35rem;letter-spacing:0.3em;color:rgba(43,191,164,0.5)}
+.ptag{font-family:'Cinzel',serif;font-size:0.33rem;letter-spacing:0.15em;padding:0.2rem 0.55rem;border:1px solid rgba(43,191,164,0.3);color:rgba(43,191,164,0.7);text-transform:uppercase}
+
+.post-title-en{
+  font-family:'Cinzel Decorative',serif;
+  font-weight:700;
+  font-size:clamp(0.85rem,2.5vw,1.35rem);
+  letter-spacing:0.04em;
+  line-height:1.25;
+  color:var(--cream);
+  margin-bottom:0.4rem;
+}
+.post-title-jp{
+  font-family:'Noto Sans JP',sans-serif;
+  font-size:clamp(0.7rem,1.6vw,0.95rem);
+  color:rgba(245,166,35,0.5);
+  letter-spacing:0.15em;
+  margin-bottom:1.5rem;
+}
+
+/* ── LANG TOGGLE ── */
+.post-lang-toggle{display:flex;gap:0.5rem;margin-bottom:1.5rem}
+.lang-btn{
+  padding:0.28rem 0.9rem;
+  background:transparent;
+  border:1px solid rgba(245,166,35,0.2);
+  color:rgba(245,166,35,0.45);
+  font-family:'Cinzel',serif;
+  font-size:0.36rem;
+  letter-spacing:0.2em;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.lang-btn.active{border-color:rgba(245,166,35,0.65);color:var(--amber);background:rgba(245,166,35,0.06)}
+.lang-btn:hover:not(.active){border-color:rgba(245,166,35,0.4);color:rgba(245,166,35,0.7)}
+
+/* ── POST BODY ── */
+.post-body{font-size:clamp(0.5rem,1.4vw,0.72rem);line-height:2.1;color:rgba(240,235,224,0.78)}
+.post-body-jp{font-family:'Noto Sans JP',sans-serif;font-size:clamp(0.55rem,1.4vw,0.78rem);line-height:2.2;letter-spacing:0.04em}
+.post-body h3{font-family:'Cinzel',serif;font-size:0.52rem;letter-spacing:0.2em;color:var(--amber);margin:1.8em 0 0.7em;text-transform:uppercase}
+.post-body p{margin-bottom:1.2em}
+.post-body .hl{color:var(--amber);font-style:italic}
+.post-body .hl-t{color:var(--teal);font-style:italic}
+.post-body ul{list-style:none;padding:0;margin-bottom:1.2em}
+.post-body ul li{padding-left:1.4em;position:relative;margin-bottom:0.5em}
+.post-body ul li::before{content:'◆';position:absolute;left:0;color:rgba(245,166,35,0.45);font-size:0.5em;top:0.35em}
+.post-body strong{color:var(--cream);font-weight:700}
+
+/* ── VLOG LINK ── */
+.post-vlog{margin-top:2rem;padding-top:1.5rem;border-top:1px solid rgba(245,166,35,0.08)}
+.vlog-link{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.25em;text-transform:uppercase;
+  color:rgba(255,30,0,0.6);
+  text-decoration:none;
+  border:1px solid rgba(255,30,0,0.22);
+  padding:0.5rem 1.2rem;
+  transition:all 0.25s;
+  text-shadow:0 0 6px rgba(255,30,0,0.4);
+}
+.vlog-link:hover{color:#ff2200;border-color:rgba(255,30,0,0.6);box-shadow:0 0 14px rgba(255,30,0,0.2);text-shadow:0 0 10px rgba(255,30,0,0.7)}
+.vlog-link.coming-soon{color:rgba(245,166,35,0.28);border-color:rgba(245,166,35,0.1);cursor:default;pointer-events:none;text-shadow:none}
+
+/* ── GEAR SPEC TABLE ── */
+.spec-table{width:100%;border-collapse:collapse;margin:1.2em 0;font-size:0.45rem}
+.spec-table td{padding:0.5rem 0.8rem;border-bottom:1px solid rgba(245,166,35,0.08);vertical-align:top}
+.spec-table td:first-child{color:rgba(43,191,164,0.7);font-family:'Cinzel',serif;letter-spacing:0.12em;white-space:nowrap;width:35%}
+.spec-table td:last-child{color:rgba(240,235,224,0.75)}
+
+/* ── FOOTER ── */
+footer{position:relative;z-index:10;padding:2rem;border-top:1px solid rgba(245,166,35,0.08);text-align:center}
+.footer-back{display:inline-flex;align-items:center;gap:0.6rem;font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.25em;color:rgba(245,166,35,0.4);text-decoration:none;transition:color 0.2s}
+.footer-back:hover{color:var(--amber)}
+.footer-copy{margin-top:1rem;font-family:'Cinzel',serif;font-size:0.32rem;letter-spacing:0.12em;color:rgba(240,235,224,0.15)}
+
+/* ────────────────────────────────────────
+   EDIT MODE STYLES
+───────────────────────────────────────── */
+
+/* Bottom edit toolbar */
+#edit-bar{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:600;
+  background:rgba(4,1,9,0.97);
+  border-top:1px solid rgba(245,166,35,0.32);
+  padding:0.65rem 2rem;
+  flex-direction:row;align-items:center;gap:0.75rem;
+  box-shadow:0 -4px 24px rgba(245,166,35,0.07);
+}
+body.edit-mode #edit-bar{display:flex}
+.eb-label{
+  font-family:'Cinzel',serif;font-size:0.34rem;letter-spacing:0.25em;
+  color:rgba(245,166,35,0.45);margin-right:0.4rem;
+}
+.eb-btn{
+  padding:0.42rem 1.1rem;background:transparent;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:0.35rem;letter-spacing:0.2em;
+  transition:all 0.2s;white-space:nowrap;
+}
+.eb-btn.amber{border:1px solid rgba(245,166,35,0.45);color:var(--amber)}
+.eb-btn.amber:hover{background:rgba(245,166,35,0.08);box-shadow:0 0 10px rgba(245,166,35,0.1)}
+.eb-btn.red{border:1px solid rgba(255,70,70,0.35);color:rgba(255,90,90,0.65)}
+.eb-btn.red:hover{background:rgba(255,60,60,0.07);border-color:rgba(255,80,80,0.6)}
+.eb-spacer{flex:1}
+
+/* In edit mode: highlight posts and editable fields */
+body.edit-mode .post{border-color:rgba(245,166,35,0.32);border-style:dashed}
+body.edit-mode [contenteditable]{
+  outline:none;cursor:text;
+  border-bottom:1px dashed rgba(245,166,35,0.22);
+  min-width:2em;display:inline-block;
+}
+body.edit-mode [contenteditable]:focus{
+  background:rgba(245,166,35,0.04);
+  border-bottom-color:rgba(245,166,35,0.55);
+}
+body.edit-mode .post-body[contenteditable]{
+  display:block;
+  border-bottom:none;
+  border:1px dashed rgba(245,166,35,0.18);
+  padding:0.5rem;
+}
+body.edit-mode .post-body[contenteditable]:focus{
+  border-color:rgba(245,166,35,0.45);
+}
+
+/* Per-post delete button */
+.post-del{
+  display:none;
+  position:absolute;top:0.55rem;right:2.4rem;
+  background:none;border:1px solid rgba(255,60,60,0.28);
+  color:rgba(255,80,80,0.45);
+  width:1.6rem;height:1.6rem;font-size:0.55rem;
+  cursor:pointer;align-items:center;justify-content:center;
+  transition:all 0.2s;z-index:5;
+}
+.post-del:hover{background:rgba(255,60,60,0.09);border-color:rgba(255,80,80,0.7);color:rgba(255,100,100,0.9)}
+body.edit-mode .post-del{display:flex}
+
+/* ── EDIT PASSWORD MODAL ── */
+#edit-modal{
+  display:none;position:fixed;inset:0;z-index:8500;
+  background:rgba(4,1,9,0.88);
+  align-items:center;justify-content:center;flex-direction:column;
+  backdrop-filter:blur(2px);
+}
+#edit-modal.show{display:flex}
+.em-box{
+  border:1px solid rgba(245,166,35,0.22);
+  border-top:2px solid rgba(245,166,35,0.6);
+  background:rgba(8,4,2,0.98);
+  padding:2.8rem 3rem;
+  text-align:center;
+  min-width:340px;
+}
+.em-title{
+  font-family:'Cinzel',serif;font-size:0.48rem;letter-spacing:0.4em;
+  color:var(--amber);text-transform:uppercase;margin-bottom:0.5rem;
+}
+.em-sub{font-family:'Noto Sans JP',sans-serif;font-size:0.5rem;color:rgba(245,166,35,0.35);letter-spacing:0.2em;margin-bottom:1.8rem}
+.em-input{
+  background:rgba(4,1,9,0.8);border:1px solid rgba(245,166,35,0.22);
+  color:var(--cream);font-family:'Space Mono',monospace;
+  font-size:0.85rem;letter-spacing:0.3em;padding:0.75rem 1.2rem;
+  width:100%;outline:none;text-align:center;transition:border-color 0.2s;
+}
+.em-input:focus{border-color:rgba(245,166,35,0.55)}
+.em-input.error{border-color:rgba(255,60,60,0.7);animation:shake 0.35s ease}
+.em-btns{display:flex;gap:0.7rem;margin-top:0.9rem}
+.em-ok,.em-cancel{
+  flex:1;padding:0.6rem;background:transparent;cursor:pointer;
+  font-family:'Cinzel',serif;font-size:0.36rem;letter-spacing:0.25em;transition:all 0.2s;
+}
+.em-ok{border:1px solid rgba(245,166,35,0.45);color:var(--amber)}
+.em-ok:hover{background:rgba(245,166,35,0.08)}
+.em-cancel{border:1px solid rgba(240,235,224,0.12);color:rgba(240,235,224,0.35)}
+.em-cancel:hover{border-color:rgba(240,235,224,0.3)}
+
+/* ── ADD / EDIT POST MODAL ── */
+#addpost-modal{
+  display:none;position:fixed;inset:0;z-index:8000;
+  background:rgba(4,1,9,0.96);
+  align-items:flex-start;justify-content:center;
+  overflow-y:auto;padding:5.5rem 1.5rem 5rem;
+}
+#addpost-modal.show{display:flex}
+.apm-inner{
+  width:100%;max-width:740px;
+  background:rgba(8,4,2,0.99);
+  border:1px solid rgba(245,166,35,0.18);
+  border-top:2px solid var(--amber);
+  padding:2.5rem 2.5rem 2rem;
+}
+.apm-title{
+  font-family:'UnifrakturMaguntia',cursive;font-size:1.8rem;
+  color:var(--amber);text-shadow:var(--glow-a);
+  margin-bottom:0.3rem;
+}
+.apm-hint{font-family:'Cinzel',serif;font-size:0.34rem;letter-spacing:0.2em;color:rgba(245,166,35,0.3);margin-bottom:2rem}
+.apm-label{
+  display:block;font-family:'Cinzel',serif;font-size:0.35rem;
+  letter-spacing:0.28em;color:rgba(245,166,35,0.5);
+  text-transform:uppercase;margin-bottom:0.38rem;
+}
+.apm-input,.apm-textarea{
+  width:100%;background:rgba(4,1,9,0.8);
+  border:1px solid rgba(245,166,35,0.16);border-bottom:1px solid rgba(245,166,35,0.28);
+  color:var(--cream);font-family:'Space Mono',monospace;
+  font-size:0.52rem;padding:0.68rem 0.9rem;
+  outline:none;transition:border-color 0.2s;margin-bottom:1.3rem;
+  resize:none;
+}
+.apm-input:focus,.apm-textarea:focus{border-color:rgba(245,166,35,0.48)}
+.apm-textarea{min-height:140px;resize:vertical;line-height:1.85}
+.apm-row{display:flex;gap:1rem;flex-wrap:wrap}
+.apm-row > div{flex:1;min-width:180px}
+.apm-row .apm-input{margin-bottom:0}
+.apm-row-gap{margin-bottom:1.3rem}
+.apm-divider{border:none;border-top:1px solid rgba(245,166,35,0.1);margin:1.6rem 0}
+.apm-lang-label{
+  font-family:'Cinzel Decorative',serif;font-size:0.4rem;letter-spacing:0.3em;
+  color:rgba(43,191,164,0.6);margin-bottom:1rem;display:block;
+}
+.apm-btns{display:flex;gap:0.8rem;margin-top:0.6rem;flex-wrap:wrap}
+.apm-publish{
+  padding:0.68rem 2rem;background:transparent;
+  border:1px solid rgba(245,166,35,0.5);color:var(--amber);
+  font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.28em;
+  cursor:pointer;transition:all 0.25s;
+}
+.apm-publish:hover{background:rgba(245,166,35,0.08);box-shadow:0 0 12px rgba(245,166,35,0.12)}
+.apm-discard{
+  padding:0.68rem 1.4rem;background:transparent;
+  border:1px solid rgba(240,235,224,0.12);color:rgba(240,235,224,0.35);
+  font-family:'Cinzel',serif;font-size:0.38rem;letter-spacing:0.22em;
+  cursor:pointer;transition:all 0.2s;
+}
+.apm-discard:hover{border-color:rgba(240,235,224,0.3)}
+
+/* ── NEON BIRD ── */
+#neon-bird{
+  position:fixed;z-index:9999;pointer-events:none;
+  display:none;
+  /* left/top set by JS */
+}
+#neon-bird svg{
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,255,1))
+    drop-shadow(0 0 9px rgba(255,255,255,0.88))
+    drop-shadow(0 0 20px rgba(215,230,255,0.65))
+    drop-shadow(0 0 42px rgba(180,208,255,0.35));
+}
+/* gentle hover float once landed */
+@keyframes birdFloat{
+  0%,100%{transform:translateX(-50%) scale(0.88) translateY(0)}
+  50%    {transform:translateX(-50%) scale(0.88) translateY(-11px)}
+}
+#neon-bird.floating{animation:birdFloat 2.5s ease-in-out infinite}
+
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  nav{padding:1rem 1.2rem}
+  main{padding:3rem 1.2rem 7rem}
+  .post{padding:2rem 1.4rem 1.8rem}
+  .jh-title{font-size:clamp(2.2rem,11vw,4rem)}
+  #edit-bar{padding:0.6rem 1rem;flex-wrap:wrap}
+  .apm-inner{padding:1.8rem 1.4rem}
+  .em-box{min-width:unset;width:90%;padding:2rem 1.6rem}
+}
+</style>
+</head>
+<body>
+
+<div id="scanlines"></div>
+<div id="vignette"></div>
+<div id="grain"></div>
+
+<!-- ═══════════════════════════════════════════════
+     PASSWORD GATE
+════════════════════════════════════════════════ -->
+<div id="gate">
+  <div class="gate-logo">Lemon King</div>
+  <div class="gate-jp">レモン キング の ジャーナル</div>
+  <div class="gate-label">Say any word · 何か一言を</div>
+  <input class="gate-input" id="gate-input" type="text" placeholder="· · · · · · ·" autocomplete="off" spellcheck="false">
+  <button class="gate-btn" id="gate-btn">ENTER ↗</button>
+  <div class="gate-hint">· any word opens the door ·</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     NEON BIRD (launched on gate unlock)
+════════════════════════════════════════════════ -->
+<div id="neon-bird">
+  <svg viewBox="-6 -8 122 74" width="116" height="66"
+       fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Body -->
+    <ellipse cx="56" cy="32" rx="14" ry="6" stroke-width="1.8"
+             style="fill:rgba(255,255,255,0.10)"/>
+    <!-- Head -->
+    <circle cx="70" cy="26" r="6.5" stroke-width="1.8"
+            style="fill:rgba(255,255,255,0.10)"/>
+    <!-- Beak -->
+    <path d="M76,25 L88,27 L76,29" stroke-width="1.6"/>
+    <!-- Left wing — flaps via SMIL -->
+    <path d="M53,30 Q36,10 6,19" stroke-width="3">
+      <animate attributeName="d" dur="0.44s" repeatCount="indefinite"
+        values="M53,30 Q36,10 6,19;M53,31 Q36,22 6,25;M53,30 Q36,10 6,19"/>
+    </path>
+    <!-- Right wing (slight phase offset) -->
+    <path d="M62,29 Q80,10 108,19" stroke-width="3">
+      <animate attributeName="d" dur="0.44s" repeatCount="indefinite" begin="0.07s"
+        values="M62,29 Q80,10 108,19;M62,30 Q80,22 108,25;M62,29 Q80,10 108,19"/>
+    </path>
+    <!-- Tail feathers -->
+    <path d="M43,35 Q32,44 26,52" stroke-width="1.6" opacity="0.6"/>
+    <path d="M46,37 Q38,48 36,56" stroke-width="1.4" opacity="0.38"/>
+  </svg>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     EDIT PASSWORD MODAL
+════════════════════════════════════════════════ -->
+<div id="edit-modal">
+  <div class="em-box">
+    <div class="em-title">Editor Access</div>
+    <div class="em-sub">編集モード · 作者専用</div>
+    <input class="em-input" id="em-input" type="password" placeholder="· · · · · ·" autocomplete="off" spellcheck="false">
+    <div class="em-btns">
+      <button class="em-ok" id="em-ok">UNLOCK ↗</button>
+      <button class="em-cancel" id="em-cancel">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     ADD POST MODAL
+════════════════════════════════════════════════ -->
+<div id="addpost-modal">
+  <div class="apm-inner">
+    <div class="apm-title">New Entry</div>
+    <div class="apm-hint">新しいジャーナルエントリー · Paragraphs separated by a blank line</div>
+
+    <div class="apm-row apm-row-gap">
+      <div>
+        <label class="apm-label">Date</label>
+        <input class="apm-input" id="ap-date" placeholder="2026.04.21">
+      </div>
+      <div>
+        <label class="apm-label">Tags (comma-separated)</label>
+        <input class="apm-input" id="ap-tags" placeholder="DIARY, GEAR, TOKYO">
+      </div>
+    </div>
+
+    <hr class="apm-divider">
+    <span class="apm-lang-label">ENGLISH</span>
+
+    <label class="apm-label">Title — EN</label>
+    <input class="apm-input" id="ap-title-en" placeholder="MY ENTRY TITLE">
+
+    <label class="apm-label">Body — EN</label>
+    <textarea class="apm-textarea" id="ap-body-en" placeholder="Write your entry here...
+
+A blank line starts a new paragraph."></textarea>
+
+    <hr class="apm-divider">
+    <span class="apm-lang-label">日本語</span>
+
+    <label class="apm-label">タイトル — JP</label>
+    <input class="apm-input" id="ap-title-jp" placeholder="エントリーのタイトル">
+
+    <label class="apm-label">本文 — JP</label>
+    <textarea class="apm-textarea" id="ap-body-jp" placeholder="日本語の本文をここに入力...
+
+空白行で段落を区切ります。"></textarea>
+
+    <hr class="apm-divider">
+
+    <label class="apm-label">Vlog URL (optional)</label>
+    <input class="apm-input" id="ap-vlog" placeholder="https://www.youtube.com/@seanl3760">
+
+    <div class="apm-btns">
+      <button class="apm-publish" id="ap-publish">PUBLISH ENTRY ↗</button>
+      <button class="apm-discard" id="ap-discard">DISCARD</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     EDIT TOOLBAR (bottom bar, appears in edit mode)
+════════════════════════════════════════════════ -->
+<div id="edit-bar">
+  <span class="eb-label">✎ EDIT MODE</span>
+  <button class="eb-btn amber" id="eb-new">＋ NEW ENTRY</button>
+  <button class="eb-btn amber" id="eb-save">💾 SAVE</button>
+  <div class="eb-spacer"></div>
+  <button class="eb-btn red" id="eb-exit">✕ EXIT EDIT</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     NAV
+════════════════════════════════════════════════ -->
+<nav>
+  <a href="index_4.html" class="nav-back">← HOME</a>
+  <a href="blog.html" class="nav-logo">Lemon King</a>
+  <div class="nav-right">
+    <div class="nav-tag">Journal</div>
+    <button id="admin-btn" title="Author edit mode">✎</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════
+     PAGE HEADER
+════════════════════════════════════════════════ -->
+<header class="journal-header">
+  <div class="jh-eyebrow">Dispatches from the Analog Underground</div>
+  <div class="jh-title">The Journal</div>
+  <div class="jh-jp">ジャーナル — アナログの地下から</div>
+  <div class="jh-sub">Gear · Life · Music · Tokyo · 機材 · 人生 · 音楽 · 東京</div>
+</header>
+
+<!-- ═══════════════════════════════════════════════
+     POSTS
+════════════════════════════════════════════════ -->
+<main id="posts-cnt">
+
+<!-- ─── POST 001 ─── -->
+<article class="post reveal">
+  <div class="post-tbar"></div>
+  <div class="post-meta">
+    <span class="post-num">001</span>
+    <span class="post-date">2026.04.18</span>
+    <span class="ptag">DIARY</span>
+    <span class="ptag">TECH</span>
+    <span class="ptag">TOKYO</span>
+  </div>
+  <h2 class="post-title-en">HOW I BUILT THIS WEBSITE<br>AT 3AM WITH AN AI</h2>
+  <div class="post-title-jp">深夜3時、AIとともにこのサイトを作った話</div>
+  <div class="post-lang-toggle">
+    <button class="lang-btn active" data-lang="en" data-post="post1">EN</button>
+    <button class="lang-btn" data-lang="jp" data-post="post1">日本語</button>
+  </div>
+
+  <div class="post-body post-body-en" id="post1-en">
+    <p>It was past midnight when I typed the first message to Claude — Anthropic's AI, the one I've been using through something called Claude Code. I didn't know what to expect. I'd been meaning to build a proper artist page for months. I had the sounds. I had the gear. I had the ideas. What I didn't have was the patience to wrestle with HTML for six hours alone.</p>
+    <p>What came out surprised me.</p>
+
+    <h3>The Idea</h3>
+    <p>I wanted a page that felt like my music — <span class="hl">analog, dark, alive with texture</span>. Not a Squarespace template. Not a WordPress theme. Something that felt like it had been run through tape. Something with hiss and flicker and imperfection built in.</p>
+    <p>I described the feeling to Claude. Not the technical spec — the feeling. "It should look like if a 1970s Tokyo record store had a website." And it started building.</p>
+
+    <h3>What Claude Did</h3>
+    <p>In that first session, we built the WebGL smoke background — a real fragment shader running in the browser, blue smoke that reacts to your mouse. We drew an open reel recorder and a cassette player directly onto an HTML canvas, animated the tape winding in real time. We added neon flickering typography and a psychedelic eye in the center of the page.</p>
+    <p>It took about four hours. I mostly described things. Claude mostly wrote code. I tested it, broke things, described the problem, and watched it fix them. It was like <span class="hl-t">pair programming with someone who doesn't sleep</span>.</p>
+
+    <h3>What I Learned</h3>
+    <p>The AI doesn't replace the artist. It replaces the part of the process that was blocking the artist from making things. I still made every decision. I still wrote the copy. I still chose the colors and the fonts and the mood. Claude just did the plumbing.</p>
+    <p>This is what tools are supposed to do. My AKAI GX-635D doesn't write music. My Juno-106 doesn't compose. They give me the physical means to turn what's inside into something outside. <span class="hl">Claude did the same thing for this website.</span></p>
+    <p>It's 3am as I write this. There's a konbini receipt on the desk. The GX-635D is running. The page is live. I feel like an artist.</p>
+  </div>
+
+  <div class="post-body post-body-jp" id="post1-jp" hidden>
+    <p>深夜を過ぎた頃、私はClaudeに最初のメッセージを送った。AnthropicのAIで、Claude Codeというツールを通じて使っているものだ。何を期待していたかはわからなかった。ちゃんとしたアーティストページを作ろうと思い続けて、もう何ヶ月も経っていた。音はある。機材もある。アイデアもある。足りないのは、一人でHTMLと6時間格闘する忍耐力だった。</p>
+    <p>出てきたものは、予想を超えていた。</p>
+
+    <h3>コンセプト</h3>
+    <p>私は、自分の音楽のようなページが欲しかった——<span class="hl">アナログで、暗く、テクスチャに満ちた生きたもの</span>。Squarespaceのテンプレートでも、WordPressのテーマでもない。テープを通したような質感のもの。ヒスとフリッカーと不完全さが最初から組み込まれたもの。</p>
+    <p>Claudeに「感じ」を伝えた。技術的な仕様ではなく、感覚を。「1970年代の東京のレコード店がウェブサイトを持っていたらどう見えるか」。そして、構築が始まった。</p>
+
+    <h3>Claudeがやったこと</h3>
+    <p>最初のセッションで、WebGLのスモークバックグラウンドを構築した——ブラウザ上でリアルに動くフラグメントシェーダー、マウスに反応する青い煙。オープンリールレコーダーとカセットプレーヤーをHTMLキャンバス上に直接描画し、テープの巻き取りをリアルタイムでアニメーションさせた。ネオンのフリッカリングタイポグラフィと、ページ中央のサイケデリックな目も追加した。</p>
+    <p>約4時間かかった。私はほとんど描写するだけで、Claudeがコードを書いた。テストして、壊して、問題を説明して、修正されるのを見た。まるで<span class="hl-t">眠らないペアプログラマーとの共同作業</span>のようだった。</p>
+
+    <h3>気づいたこと</h3>
+    <p>AIはアーティストを置き換えない。アーティストがものを作るのを妨げていたプロセスの部分を置き換えるのだ。すべての決断は私がした。コピーも私が書いた。色もフォントもムードも私が選んだ。Claudeは配管工事をやってくれただけだ。</p>
+    <p>ツールとはそういうものだ。AKAI GX-635Dは音楽を書かない。Juno-106は作曲しない。内側にあるものを外側に変換するための物理的な手段を与えてくれる。<span class="hl">Claudeも、このウェブサイトに対して同じことをしてくれた。</span></p>
+    <p>これを書いているのは深夜3時だ。デスクにはコンビニのレシートがある。GX-635Dが動いている。ページは公開されている。私はアーティストだと感じている。</p>
+  </div>
+
+  <div class="post-vlog">
+    <a class="vlog-link coming-soon">▶ VLOG COMING SOON · 近日公開</a>
+  </div>
+</article>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════════ -->
+<footer>
+  <a href="index_4.html" class="footer-back">← RETURN TO THE SIGNAL</a>
+  <div class="footer-copy">© 2026 SHUNSUKE · 東京アナログ · LEMON KING'S JOURNAL</div>
+</footer>
+
+<script>
+'use strict';
+
+const GATE_PW   = 'analog';
+const STORE_KEY = 'lk_journal_v1';
+
+// ═══════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════
+
+/** Attach lang-toggle click handlers to .lang-btn elements */
+function initLangToggle(root){
+  (root||document).querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.addEventListener('click',function(){
+      const post = this.dataset.post;
+      const lang = this.dataset.lang;
+      this.closest('.post-lang-toggle').querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+      this.classList.add('active');
+      const en = document.getElementById(post+'-en');
+      const jp = document.getElementById(post+'-jp');
+      if(!en||!jp) return;
+      if(lang==='en'){ en.removeAttribute('hidden'); jp.setAttribute('hidden',''); }
+      else           { jp.removeAttribute('hidden'); en.setAttribute('hidden',''); }
+    });
+  });
+}
+
+/** Attach IntersectionObserver for .reveal elements */
+function initReveal(root){
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); });
+  },{threshold:0.08});
+  (root||document).querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}
+
+/** Convert plain text (blank-line paragraphs) → <p> HTML */
+function textToHtml(text){
+  if(!text.trim()) return '<p>—</p>';
+  return text.trim()
+    .split(/\n{2,}/)
+    .map(p=>'<p>'+p.replace(/\n/g,'<br>')+'</p>')
+    .join('\n    ');
+}
+
+/** Next post number based on existing .post-num elements */
+function nextPostNum(){
+  const nums = [];
+  document.querySelectorAll('#posts-cnt .post-num').forEach(el=>{
+    const n = parseInt(el.textContent, 10);
+    if(!isNaN(n)) nums.push(n);
+  });
+  return nums.length ? String(Math.max(...nums)+1).padStart(3,'0') : '001';
+}
+
+// ═══════════════════════════════════════════════
+//  NEON BIRD LAUNCH
+// ═══════════════════════════════════════════════
+function launchBird(){
+  const bird = document.getElementById('neon-bird');
+  bird.style.display = 'block';
+
+  // Start: center-screen near the gate input (~60 % down)
+  const startX = window.innerWidth  / 2;
+  const startY = window.innerHeight * 0.60;
+  bird.style.left      = startX + 'px';
+  bird.style.top       = startY + 'px';
+  bird.style.transform = 'translateX(-50%)';
+
+  // Target: "The Journal" title (already in DOM behind the gate)
+  const titleEl = document.querySelector('.jh-title');
+  const rect    = titleEl.getBoundingClientRect();
+  const targetX = rect.left + rect.width  / 2;
+  const targetY = rect.top  + rect.height / 2 - 18;
+
+  // Arc midpoint — swings slightly right for a natural curve
+  const midX = (startX + targetX) / 2 + 55;
+  const midY = (startY + targetY) / 2 - 20;
+
+  // Phase 1: fly
+  const fly = bird.animate([
+    { top:startX+'px', left:startX+'px', opacity:'0', transform:'translateX(-50%) scale(1.5)',                   easing:'linear' },
+    { top:startY+'px', left:startX+'px', opacity:'1', transform:'translateX(-50%) scale(1.25)',                  offset:0.06  },
+    { top:midY+'px',   left:midX+'px',   opacity:'1', transform:'translateX(-50%) scale(1.05) rotate(-10deg)',   offset:0.50  },
+    { top:targetY+'px',left:targetX+'px',opacity:'1', transform:'translateX(-50%) scale(0.88) rotate(0deg)'                   }
+  ],{ duration:1700, easing:'cubic-bezier(0.33,0,0.22,1)', fill:'forwards' });
+
+  fly.onfinish = ()=>{
+    // Commit computed styles → inline, then release fill so we can hover
+    if(fly.commitStyles) fly.commitStyles();
+    fly.cancel();
+    bird.style.top       = targetY + 'px';
+    bird.style.left      = targetX + 'px';
+    bird.style.opacity   = '1';
+    bird.style.transform = 'translateX(-50%) scale(0.88)';
+
+    // Phase 2: hover float
+    bird.classList.add('floating');
+
+    // Phase 3: fade away after 5 s
+    setTimeout(()=>{
+      bird.classList.remove('floating');
+      const fade = bird.animate(
+        [{opacity:'1'},{opacity:'0'}],
+        {duration:1100, fill:'forwards'}
+      );
+      fade.onfinish = ()=>{ bird.style.display='none'; };
+    }, 5000);
+  };
+}
+
+// ═══════════════════════════════════════════════
+//  READER GATE  (password is free — any word)
+// ═══════════════════════════════════════════════
+(function(){
+  const gate  = document.getElementById('gate');
+  const input = document.getElementById('gate-input');
+  const btn   = document.getElementById('gate-btn');
+
+  // Already unlocked this session — skip gate, no bird
+  if(sessionStorage.getItem('lk_access')==='1'){
+    gate.classList.add('gone');
+    setTimeout(()=>gate.style.display='none', 600);
+    return;
+  }
+
+  // Neon flash on every keypress
+  input.addEventListener('input', ()=>{
+    input.classList.remove('key-flash');
+    void input.offsetWidth;          // force reflow to restart animation
+    input.classList.add('key-flash');
+  });
+
+  // Unlock with any word (or empty — just press Enter)
+  function unlock(){
+    sessionStorage.setItem('lk_access','1');
+    gate.classList.add('gone');
+    setTimeout(()=>gate.style.display='none', 600);
+    launchBird();
+  }
+  btn.addEventListener('click', unlock);
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter') unlock(); });
+})();
+
+// ═══════════════════════════════════════════════
+//  LOAD SAVED POSTS (localStorage)
+// ═══════════════════════════════════════════════
+(function(){
+  const saved = localStorage.getItem(STORE_KEY);
+  if(saved){
+    document.getElementById('posts-cnt').innerHTML = saved;
+  }
+  initLangToggle();
+  initReveal();
+})();
+
+// ═══════════════════════════════════════════════
+//  EDIT MODE
+// ═══════════════════════════════════════════════
+(function(){
+  let editActive = false;
+
+  const editModal    = document.getElementById('edit-modal');
+  const emInput      = document.getElementById('em-input');
+  const addpostModal = document.getElementById('addpost-modal');
+  const adminBtn     = document.getElementById('admin-btn');
+
+  // ── Admin button: open edit-password modal (or exit if already active)
+  adminBtn.addEventListener('click',()=>{
+    if(editActive){ exitEdit(); return; }
+    editModal.classList.add('show');
+    emInput.value = '';
+    setTimeout(()=>emInput.focus(), 60);
+  });
+
+  // ── Edit modal: cancel
+  document.getElementById('em-cancel').addEventListener('click',()=>{
+    editModal.classList.remove('show');
+  });
+
+  // ── Edit modal: submit
+  function attemptEdit(){
+    if(emInput.value.trim().toLowerCase()===GATE_PW){
+      editModal.classList.remove('show');
+      enterEdit();
+    } else {
+      emInput.classList.remove('error');
+      void emInput.offsetWidth;
+      emInput.classList.add('error');
+      emInput.value = '';
+      setTimeout(()=>emInput.classList.remove('error'), 400);
+    }
+  }
+  document.getElementById('em-ok').addEventListener('click', attemptEdit);
+  emInput.addEventListener('keydown', e=>{ if(e.key==='Enter') attemptEdit(); });
+
+  // ── Enter edit mode
+  function enterEdit(){
+    editActive = true;
+    document.body.classList.add('edit-mode');
+    adminBtn.textContent = '✎ ON';
+    adminBtn.classList.add('active');
+    applyEditAttrs();
+  }
+
+  // ── Apply contenteditable + delete buttons to all posts
+  function applyEditAttrs(){
+    document.querySelectorAll('#posts-cnt .post-title-en,#posts-cnt .post-title-jp,#posts-cnt .post-date,#posts-cnt .ptag').forEach(el=>{
+      el.contentEditable = 'true';
+    });
+    document.querySelectorAll('#posts-cnt .post-body').forEach(el=>{
+      el.contentEditable = 'true';
+    });
+    document.querySelectorAll('#posts-cnt .post').forEach(addDeleteBtn);
+  }
+
+  function addDeleteBtn(post){
+    if(post.querySelector('.post-del')) return;
+    const del = document.createElement('button');
+    del.className = 'post-del';
+    del.textContent = '✕';
+    del.title = 'Delete this entry';
+    del.addEventListener('click',()=>{
+      if(confirm('Delete this entry? This cannot be undone until you Save.')) post.remove();
+    });
+    post.appendChild(del);
+  }
+
+  // ── Save to localStorage (clean clone — no edit artifacts)
+  function savePosts(){
+    const cnt   = document.getElementById('posts-cnt');
+    const clone = cnt.cloneNode(true);
+    clone.querySelectorAll('[contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    clone.querySelectorAll('.post-del').forEach(el=>el.remove());
+    localStorage.setItem(STORE_KEY, clone.innerHTML);
+
+    const btn = document.getElementById('eb-save');
+    const orig = btn.textContent;
+    btn.textContent = '✓ SAVED';
+    setTimeout(()=>btn.textContent=orig, 1600);
+  }
+
+  // ── Exit edit mode
+  function exitEdit(){
+    editActive = false;
+    document.body.classList.remove('edit-mode');
+    adminBtn.textContent = '✎';
+    adminBtn.classList.remove('active');
+    document.querySelectorAll('#posts-cnt [contenteditable]').forEach(el=>el.removeAttribute('contenteditable'));
+    document.querySelectorAll('#posts-cnt .post-del').forEach(el=>el.remove());
+  }
+
+  document.getElementById('eb-save').addEventListener('click', savePosts);
+  document.getElementById('eb-exit').addEventListener('click', exitEdit);
+
+  // ══════════════════════════════════════════
+  //  ADD NEW POST MODAL
+  // ══════════════════════════════════════════
+  document.getElementById('eb-new').addEventListener('click',()=>{
+    const today  = new Date();
+    const pad    = n=>String(n).padStart(2,'0');
+    const dateStr= today.getFullYear()+'.'+pad(today.getMonth()+1)+'.'+pad(today.getDate());
+    document.getElementById('ap-date').value     = dateStr;
+    document.getElementById('ap-tags').value     = '';
+    document.getElementById('ap-title-en').value = '';
+    document.getElementById('ap-title-jp').value = '';
+    document.getElementById('ap-body-en').value  = '';
+    document.getElementById('ap-body-jp').value  = '';
+    document.getElementById('ap-vlog').value     = '';
+    addpostModal.classList.add('show');
+    setTimeout(()=>document.getElementById('ap-title-en').focus(), 60);
+  });
+
+  document.getElementById('ap-discard').addEventListener('click',()=>{
+    addpostModal.classList.remove('show');
+  });
+
+  document.getElementById('ap-publish').addEventListener('click',()=>{
+    const date    = document.getElementById('ap-date').value.trim()     || '2026.01.01';
+    const tagsRaw = document.getElementById('ap-tags').value            || 'DIARY';
+    const titleEn = document.getElementById('ap-title-en').value.trim() || 'NEW ENTRY';
+    const titleJp = document.getElementById('ap-title-jp').value.trim() || '新しいエントリー';
+    const bodyEn  = textToHtml(document.getElementById('ap-body-en').value);
+    const bodyJp  = textToHtml(document.getElementById('ap-body-jp').value);
+    const vlogUrl = document.getElementById('ap-vlog').value.trim();
+
+    const tags = tagsRaw.split(',').map(t=>t.trim().toUpperCase()).filter(Boolean);
+    const num  = nextPostNum();
+    const slug = 'p' + Date.now(); // unique id for lang toggle
+
+    const tagHtml  = tags.map(t=>`<span class="ptag">${t}</span>`).join('\n    ');
+    const vlogHtml = vlogUrl
+      ? `<a href="${vlogUrl}" target="_blank" rel="noopener" class="vlog-link">▶ WATCH THE VLOG · YouTubeで見る</a>`
+      : `<a class="vlog-link coming-soon">▶ VLOG COMING SOON · 近日公開</a>`;
+
+    const html = `<article class="post reveal vis">
+  <div class="post-tbar"></div>
+  <div class="post-meta">
+    <span class="post-num">${num}</span>
+    <span class="post-date">${date}</span>
+    ${tagHtml}
+  </div>
+  <h2 class="post-title-en">${titleEn}</h2>
+  <div class="post-title-jp">${titleJp}</div>
+  <div class="post-lang-toggle">
+    <button class="lang-btn active" data-lang="en" data-post="${slug}">EN</button>
+    <button class="lang-btn" data-lang="jp" data-post="${slug}">日本語</button>
+  </div>
+  <div class="post-body post-body-en" id="${slug}-en">${bodyEn}</div>
+  <div class="post-body post-body-jp" id="${slug}-jp" hidden>${bodyJp}</div>
+  <div class="post-vlog">${vlogHtml}</div>
+</article>`;
+
+    const cnt = document.getElementById('posts-cnt');
+    cnt.insertAdjacentHTML('afterbegin', html);
+
+    const newPost = cnt.querySelector('.post:first-child');
+    // Attach lang toggle to the new post
+    initLangToggle(newPost);
+    // Apply edit attributes to the new post immediately
+    newPost.querySelectorAll('.post-title-en,.post-title-jp,.post-date,.ptag').forEach(el=>el.contentEditable='true');
+    newPost.querySelectorAll('.post-body').forEach(el=>el.contentEditable='true');
+    addDeleteBtn(newPost);
+
+    addpostModal.classList.remove('show');
+    newPost.scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+})();
+</script>
+</body>
+</html>
